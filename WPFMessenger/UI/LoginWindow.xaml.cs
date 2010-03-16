@@ -19,12 +19,12 @@ namespace WPFMessenger
 
     public partial class LoginWindow : Window
     {
-        private User user;
+        private MSNUser user;
         private TCPConnection tcp;
 
         public LoginWindow()
         {
-            user = new User();
+            user = new MSNUser();
             tcp = new TCPConnection();
 
             tcp.User = user;
@@ -90,8 +90,8 @@ namespace WPFMessenger
         private void ValidateConnect(object sender, DoWorkEventArgs e)
         {
 
-            //e.Result = tcp.Connect();
-            e.Result = true;
+            e.Result = tcp.Connect();
+            //e.Result = true;
 
         }
 
@@ -104,6 +104,7 @@ namespace WPFMessenger
             if (connected)
             {
                 MainWindow main = new MainWindow();
+                main.ListUsers = tcp.GetListUsers();
                 main.Show();
 
                 this.Close();
