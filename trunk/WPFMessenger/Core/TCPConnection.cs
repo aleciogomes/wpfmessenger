@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Text;
-using System.Net.Sockets;
+using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
+using System.Text;
 
 namespace WPFMessenger.Core
 {
@@ -11,9 +12,11 @@ namespace WPFMessenger.Core
     class TCPConnection
     {
 
-        private User user;
+        private static string errorMsg = "Erro: Id inválido: ";
+        private string returnString;
+        private MSNUser user;
 
-        public User User
+        public MSNUser User
         {
             get { return user; }
             set { user = value; }
@@ -21,7 +24,7 @@ namespace WPFMessenger.Core
 
         private string serverURL = "larc.inf.furb.br";
 
-        private string getUsrString = " GET USRS ";
+        private string getUsrString = "GET USRS ";
 
         public bool Connect()
         {
@@ -37,7 +40,9 @@ namespace WPFMessenger.Core
                 Stream stm = tcpclnt.GetStream();
 
                 ASCIIEncoding asen = new ASCIIEncoding();
-                byte[] ba = asen.GetBytes(String.Format("{0} {1}:{2}", this.getUsrString, user.IdUsuario, user.SenhaUsuario));
+                string command = String.Format("{0}{1}:{2}", this.getUsrString, user.IdUsuario, user.SenhaUsuario);
+
+                byte[] ba = asen.GetBytes(command);
 
                 Console.WriteLine("Transmitindo.....");
 
@@ -46,10 +51,23 @@ namespace WPFMessenger.Core
                 byte[] bb = new byte[100];
                 int k = stm.Read(bb, 0, 100);
 
+                StringBuilder retorno = new StringBuilder();
+
                 for (int i = 0; i < k; i++)
-                    Console.Write(Convert.ToChar(bb[i]));
+                {
+                    retorno.Append(Convert.ToChar(bb[i]).ToString());
+                }
 
                 tcpclnt.Close();
+
+                //Erro: Id inválido: GET USRS  111:teste123
+
+                returnString = retorno.ToString();
+
+                if (returnString.Equals(String.Format("{0}{1}", errorMsg, command)))
+                {
+                    return false;
+                }
 
                 return true;
             }
@@ -59,6 +77,41 @@ namespace WPFMessenger.Core
                 Console.WriteLine("Erro: " + erro.StackTrace);
                 return false;
             }
+
+        }
+
+        public IList<MSNUser> GetListUsers()
+        {
+
+            IList<MSNUser> list = new List<MSNUser>();
+
+            string[] returnVector = returnString.Split(new char[] { ':' });
+            string value = "";
+
+            MSNUser user = null;
+
+            for (int i = 0; i < returnVector.Length; i++)
+            {
+                value = returnVector[i].ToString();
+
+                if (!String.IsNullOrEmpty(value))
+                {
+                    if (i % 2 == 0)
+                    {
+                        user = new MSNUser();
+                        user.IdUsuario = Int32.Parse(value);
+                    }
+                    else
+                    {
+                        user.NomeUsuario = value;
+                        list.Add(user);
+                    }
+                }
+            }
+
+            //7237:Luiz Diego Aquino:
+
+            return list;
 
         }
 

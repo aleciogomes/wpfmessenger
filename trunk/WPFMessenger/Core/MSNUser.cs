@@ -5,7 +5,7 @@ using System.Text;
 
 namespace WPFMessenger.Core
 {
-    class User
+    public class MSNUser
     {
         private string nomeUsuario;
         private string senhaUsuario;

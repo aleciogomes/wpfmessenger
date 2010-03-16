@@ -1,7 +1,7 @@
 ﻿<Window x:Class="WPFMessenger.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="WPFMessenger" Height="407" Width="310" Loaded="Window_Loaded">
+    Title="WPFMessenger" Height="407" Width="310" Loaded="Window_Loaded" Icon="/WPFMessenger;component/images/wpfmsn.png">
     <Grid>
         <Rectangle Name="rectangle1" Height="70" VerticalAlignment="Top">
             <Rectangle.Fill>
@@ -17,8 +17,8 @@
         <Border Height="64" Margin="11,3,0,0" VerticalAlignment="Top" BorderThickness="0.1" CornerRadius="2,2,2,2" Background="Chartreuse" HorizontalAlignment="Left" Width="80">
             <Image Height="55" HorizontalAlignment="Left" Margin="5,5,5,5" Stretch="Fill" VerticalAlignment="Top" IsEnabled="True" Source="/WPFMessenger;component/images/avatar.png" />
         </Border>
-        <TreeView Margin="1,73,-1,-1" Name="treeUsuarios" BorderThickness="0" >
-            <TreeViewItem Header="Usuários Logados" FontSize="12" FontWeight="Bold" Foreground="CadetBlue" />
+        <TreeView Margin="1,73,-1,-1" Name="treeUsers" BorderThickness="0" >
+            <TreeViewItem Header="Usuários Logados" FontSize="12" FontWeight="Bold" Foreground="CadetBlue" Name="treeItemRoot" />
         </TreeView>
     </Grid>
 </Window>
