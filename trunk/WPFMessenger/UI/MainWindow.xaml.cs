@@ -20,6 +20,17 @@ namespace WPFMessenger
         public MainWindow()
         {
             InitializeComponent();
+
+            RSSReader r = new RSSReader();
+            r.Read();
+
+            ListBoxItem item = null;
+            foreach (RSSNews news in r.ListNews)
+            {
+                item = new ListBoxItem();
+                item.Content = news.Title;
+                listBox.Items.Add(item);
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

@@ -11,7 +11,11 @@ namespace WPFMessenger.Core
 
     class TCPConnection
     {
-
+        /*USUARIOS E SENHAS
+         * 3299 / 12qnmn
+         * 7237 / ht7mxh
+         * 
+         */
         private static string errorMsg = "Erro: Id inválido: ";
         private string returnString;
         private MSNUser user;
@@ -85,31 +89,32 @@ namespace WPFMessenger.Core
 
             IList<MSNUser> list = new List<MSNUser>();
 
-            string[] returnVector = returnString.Split(new char[] { ':' });
-            string value = "";
-
-            MSNUser user = null;
-
-            for (int i = 0; i < returnVector.Length; i++)
+            if (!String.IsNullOrEmpty(returnString))
             {
-                value = returnVector[i].ToString();
+                string[] returnVector = returnString.Split(new char[] { ':' });
+                string value = "";
 
-                if (!String.IsNullOrEmpty(value))
+                MSNUser user = null;
+
+                for (int i = 0; i < returnVector.Length; i++)
                 {
-                    if (i % 2 == 0)
+                    value = returnVector[i].ToString();
+
+                    if (!String.IsNullOrEmpty(value))
                     {
-                        user = new MSNUser();
-                        user.IdUsuario = Int32.Parse(value);
-                    }
-                    else
-                    {
-                        user.NomeUsuario = value;
-                        list.Add(user);
+                        if (i % 2 == 0)
+                        {
+                            user = new MSNUser();
+                            user.IdUsuario = Int32.Parse(value);
+                        }
+                        else
+                        {
+                            user.NomeUsuario = value;
+                            list.Add(user);
+                        }
                     }
                 }
             }
-
-            //7237:Luiz Diego Aquino:
 
             return list;
 

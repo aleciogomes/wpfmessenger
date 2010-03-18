@@ -90,8 +90,8 @@ namespace WPFMessenger
         private void ValidateConnect(object sender, DoWorkEventArgs e)
         {
 
-            e.Result = tcp.Connect();
-            //e.Result = true;
+            //e.Result = tcp.Connect();
+            e.Result = true;
 
         }
 

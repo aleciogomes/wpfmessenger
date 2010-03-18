@@ -81,6 +81,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\RSSNews.cs" />
+    <Compile Include="Core\RSSReader.cs" />
     <Compile Include="Core\TCPConnection.cs" />
     <Compile Include="Core\MSNUser.cs" />
     <Compile Include="UI\LoginWindow.xaml.cs">
