@@ -44,7 +44,7 @@ namespace WPFMessenger.Core
                 Stream stm = tcpclnt.GetStream();
 
                 ASCIIEncoding asen = new ASCIIEncoding();
-                string command = String.Format("{0}{1}:{2}", this.getUsrString, user.IdUsuario, user.SenhaUsuario);
+                string command = String.Format("{0}{1}:{2}", this.getUsrString, user.UserID, user.UserPassword);
 
                 byte[] ba = asen.GetBytes(command);
 
@@ -105,11 +105,11 @@ namespace WPFMessenger.Core
                         if (i % 2 == 0)
                         {
                             user = new MSNUser();
-                            user.IdUsuario = Int32.Parse(value);
+                            user.UserID = Int32.Parse(value);
                         }
                         else
                         {
-                            user.NomeUsuario = value;
+                            user.UserName = value;
                             list.Add(user);
                         }
                     }

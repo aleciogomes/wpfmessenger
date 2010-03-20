@@ -10,8 +10,8 @@
         <Label Margin="48,165,36,179">Entre com seu ID da disciplina de Redes.</Label>
         <GroupBox Header="Login" Margin="35,0,28,73" Height="101" VerticalAlignment="Bottom">
             <StackPanel>
-                <TextBox Height="23" Name="idUsuario" Width="Auto" Margin="10,10,10,3" Foreground="DarkGray" GotFocus="idUsuario_GotFocus">Insira seu ID</TextBox>
-                <TextBox Height="23" Name="senhaUsuario" Width="Auto" Margin="10,10,10,3" TextDecorations="None" Foreground="DarkGray" GotFocus="senhaUsuario_GotFocus">Insira sua Senha</TextBox>
+                <TextBox Height="23" Name="userID" Width="Auto" Margin="10,10,10,3" Foreground="DarkGray" GotFocus="userID_GotFocus">Insira seu ID</TextBox>
+                <TextBox Height="23" Name="userPassword" Width="Auto" Margin="10,10,10,3" TextDecorations="None" Foreground="DarkGray" GotFocus="userPassword_GotFocus">Insira sua Senha</TextBox>
             </StackPanel>
         </GroupBox>
         <ProgressBar Height="14" Margin="35,0,28,54" Name="loginBar" VerticalAlignment="Bottom" Visibility="Hidden" />

@@ -7,26 +7,26 @@ namespace WPFMessenger.Core
 {
     public class MSNUser
     {
-        private string nomeUsuario;
-        private string senhaUsuario;
-        private int idUsuario;
+        private string userName;
+        private string userPassword;
+        private int userID;
 
-        public string NomeUsuario
+        public string UserName
         {
-            get { return nomeUsuario; }
-            set { nomeUsuario = value; }
+            get { return userName; }
+            set { userName = value; }
         }
 
-        public string SenhaUsuario
+        public string UserPassword
         {
-            get { return senhaUsuario; }
-            set { senhaUsuario = value; }
+            get { return userPassword; }
+            set { userPassword = value; }
         }
 
-        public int IdUsuario
+        public int UserID
         {
-            get { return idUsuario; }
-            set { idUsuario = value; }
+            get { return userID; }
+            set { userID = value; }
         }
 
     }
