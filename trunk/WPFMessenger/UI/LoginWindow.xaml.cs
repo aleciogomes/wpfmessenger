@@ -32,47 +32,51 @@ namespace WPFMessenger
             InitializeComponent();
         }
 
-        private void idUsuario_GotFocus(object sender, RoutedEventArgs e)
+        private void userID_GotFocus(object sender, RoutedEventArgs e)
         {
-            idUsuario.Clear();
-            idUsuario.Foreground = new SolidColorBrush(Colors.Black);
-            idUsuario.GotFocus -= idUsuario_GotFocus;
+            userID.Clear();
+            userID.Foreground = new SolidColorBrush(Colors.Black);
+            userID.GotFocus -= userID_GotFocus;
+
+            userID.Text = "7237";
         }
 
-        private void senhaUsuario_GotFocus(object sender, RoutedEventArgs e)
+        private void userPassword_GotFocus(object sender, RoutedEventArgs e)
         {
-            senhaUsuario.Clear();
-            senhaUsuario.Foreground = new SolidColorBrush(Colors.Black);
-            senhaUsuario.GotFocus -= senhaUsuario_GotFocus;
+            userPassword.Clear();
+            userPassword.Foreground = new SolidColorBrush(Colors.Black);
+            userPassword.GotFocus -= userPassword_GotFocus;
+
+            userPassword.Text = "ht7mxh";
         }
 
         private void btLogin_Click(object sender, RoutedEventArgs e)
         {
             lblError.Visibility = Visibility.Hidden;
-            idUsuario.Focus();
-            senhaUsuario.Focus();
+            userID.Focus();
+            userPassword.Focus();
 
-            if (String.IsNullOrEmpty(senhaUsuario.Text.ToString())|| String.IsNullOrEmpty(idUsuario.Text.ToString()))
+            if (String.IsNullOrEmpty(userPassword.Text.ToString())|| String.IsNullOrEmpty(userID.Text.ToString()))
             {
-                senhaUsuario.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                userPassword.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
                 MessageBox.Show("Informe seu ID e sua Senha.");
                 return;
             }
 
-            int idUsuarioValor;
+            int userIDValor;
 
-            if (!int.TryParse(idUsuario.Text.ToString(), out idUsuarioValor))
+            if (!int.TryParse(userID.Text.ToString(), out userIDValor))
             {
                 MessageBox.Show("O valor informado no campo ID deve ser númerico.");
                 return;
             }
 
-            user.IdUsuario = idUsuarioValor;
-            user.SenhaUsuario = senhaUsuario.Text.ToString();
+            user.UserID = userIDValor;
+            user.UserPassword = userPassword.Text.ToString();
 
             btLogin.IsEnabled = false;
-            idUsuario.IsEnabled = false;
-            senhaUsuario.IsEnabled = false;
+            userID.IsEnabled = false;
+            userPassword.IsEnabled = false;
 
             Duration duration = new Duration(TimeSpan.FromSeconds(1));
             DoubleAnimation doubleanimation = new DoubleAnimation(100.0, duration);
@@ -90,8 +94,8 @@ namespace WPFMessenger
         private void ValidateConnect(object sender, DoWorkEventArgs e)
         {
 
-            //e.Result = tcp.Connect();
-            e.Result = true;
+            e.Result = tcp.Connect();
+            //e.Result = true;
 
         }
 
@@ -112,8 +116,8 @@ namespace WPFMessenger
             else
             {
                 btLogin.IsEnabled = true;
-                idUsuario.IsEnabled = true;
-                senhaUsuario.IsEnabled = true;
+                userID.IsEnabled = true;
+                userPassword.IsEnabled = true;
                 lblError.Visibility = Visibility.Visible;
                 loginBar.Visibility = Visibility.Hidden;
                 loginBar.BeginAnimation(ProgressBar.ValueProperty, null);
