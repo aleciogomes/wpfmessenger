@@ -12,6 +12,7 @@ using System.Windows.Media.Animation;
 using System.Threading;
 using WPFMessenger.Core;
 using System.ComponentModel;
+using System.Windows.Controls.Primitives;
 
 
 namespace WPFMessenger
@@ -52,6 +53,11 @@ namespace WPFMessenger
 
         private void btLogin_Click(object sender, RoutedEventArgs e)
         {
+            /*
+            PopupManager p = new PopupManager();
+            p.CreateBaloon();
+            */
+
             lblError.Visibility = Visibility.Hidden;
             userID.Focus();
             userPassword.Focus();
@@ -89,6 +95,7 @@ namespace WPFMessenger
             bw.DoWork += ValidateConnect;
             bw.RunWorkerCompleted += GetValidationConnect;
             bw.RunWorkerAsync();
+           
         }
 
         private void ValidateConnect(object sender, DoWorkEventArgs e)
