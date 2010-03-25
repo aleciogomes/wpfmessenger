@@ -75,6 +75,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UI\TalkWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -88,6 +92,7 @@
     <Compile Include="Core\PopupManager.cs" />
     <Compile Include="Core\RSSNews.cs" />
     <Compile Include="Core\RSSReader.cs" />
+    <Compile Include="Core\TalkManager.cs" />
     <Compile Include="Core\TCPConnection.cs" />
     <Compile Include="Core\MSNUser.cs" />
     <Compile Include="UI\Alerta.xaml.cs">
@@ -109,9 +114,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="UI\TalkWindow.xaml.cs">
+      <DependentUpon>TalkWindow.xaml</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

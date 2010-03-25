@@ -88,13 +88,12 @@ namespace WPFMessenger.Core
         {
 
             IList<MSNUser> list = new List<MSNUser>();
+            MSNUser user = null;
 
             if (!String.IsNullOrEmpty(returnString))
             {
                 string[] returnVector = returnString.Split(new char[] { ':' });
-                string value = "";
-
-                MSNUser user = null;
+                string value = "";   
 
                 for (int i = 0; i < returnVector.Length; i++)
                 {
@@ -115,6 +114,11 @@ namespace WPFMessenger.Core
                     }
                 }
             }
+
+            user = new MSNUser();
+            user.UserID = 45;
+            user.UserName = "Teste";
+            list.Add(user);
 
             return list;
 
