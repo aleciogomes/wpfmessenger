@@ -53,61 +53,57 @@ namespace WPFMessenger
 
         private void btLogin_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            PopupManager p = new PopupManager();
-            p.CreateBaloon();
-            */
+ 
+           lblError.Visibility = Visibility.Hidden;
+           userID.Focus();
+           userPassword.Focus();
 
-            lblError.Visibility = Visibility.Hidden;
-            userID.Focus();
-            userPassword.Focus();
+           if (String.IsNullOrEmpty(userPassword.Text.ToString())|| String.IsNullOrEmpty(userID.Text.ToString()))
+           {
+               userPassword.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+               MessageBox.Show("Informe seu ID e sua Senha.");
+               return;
+           }
 
-            if (String.IsNullOrEmpty(userPassword.Text.ToString())|| String.IsNullOrEmpty(userID.Text.ToString()))
-            {
-                userPassword.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-                MessageBox.Show("Informe seu ID e sua Senha.");
-                return;
-            }
+           int userIDValor;
 
-            int userIDValor;
+           if (!int.TryParse(userID.Text.ToString(), out userIDValor))
+           {
+               MessageBox.Show("O valor informado no campo ID deve ser númerico.");
+               return;
+           }
 
-            if (!int.TryParse(userID.Text.ToString(), out userIDValor))
-            {
-                MessageBox.Show("O valor informado no campo ID deve ser númerico.");
-                return;
-            }
+           user.UserID = userIDValor;
+           user.UserPassword = userPassword.Text.ToString();
 
-            user.UserID = userIDValor;
-            user.UserPassword = userPassword.Text.ToString();
+           btLogin.IsEnabled = false;
+           userID.IsEnabled = false;
+           userPassword.IsEnabled = false;
 
-            btLogin.IsEnabled = false;
-            userID.IsEnabled = false;
-            userPassword.IsEnabled = false;
+           Duration duration = new Duration(TimeSpan.FromSeconds(1));
+           DoubleAnimation doubleanimation = new DoubleAnimation(100.0, duration);
+           doubleanimation.RepeatBehavior = RepeatBehavior.Forever;
 
-            Duration duration = new Duration(TimeSpan.FromSeconds(1));
-            DoubleAnimation doubleanimation = new DoubleAnimation(100.0, duration);
-            doubleanimation.RepeatBehavior = RepeatBehavior.Forever;
+           loginBar.Visibility = Visibility.Visible;
+           loginBar.BeginAnimation(ProgressBar.ValueProperty, doubleanimation);
 
-            loginBar.Visibility = Visibility.Visible;
-            loginBar.BeginAnimation(ProgressBar.ValueProperty, doubleanimation);
+           BackgroundWorker bw = new BackgroundWorker();
+           bw.DoWork += ValidateConnect;
+           bw.RunWorkerCompleted += GetConnectionValidation;
+           bw.RunWorkerAsync();
 
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += ValidateConnect;
-            bw.RunWorkerCompleted += GetValidationConnect;
-            bw.RunWorkerAsync();
-           
         }
 
         private void ValidateConnect(object sender, DoWorkEventArgs e)
         {
 
-            e.Result = tcp.Connect();
-            //e.Result = true;
+            //e.Result = tcp.Connect();
+            e.Result = true;
 
         }
 
 
-        private void GetValidationConnect(object sender, RunWorkerCompletedEventArgs e)
+        private void GetConnectionValidation(object sender, RunWorkerCompletedEventArgs e)
         {
 
             bool connected = Boolean.Parse(e.Result.ToString());

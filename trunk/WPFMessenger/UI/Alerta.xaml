@@ -40,9 +40,6 @@
 		</Storyboard>
 	</UserControl.Resources>
 	<UserControl.Triggers>
-        <EventTrigger RoutedEvent="me.BalloonShowing">
-            <BeginStoryboard Storyboard="{StaticResource FadeIn}" x:Name="FadeIn_BeginStoryboard"/>
-        </EventTrigger>
         <EventTrigger RoutedEvent="Mouse.MouseEnter" SourceName="imgClose">
 			<BeginStoryboard Storyboard="{StaticResource HighlightCloseButton}" x:Name="HighlightCloseButton_BeginStoryboard"/>
 		</EventTrigger>

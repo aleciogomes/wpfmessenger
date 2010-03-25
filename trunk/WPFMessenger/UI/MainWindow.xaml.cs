@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System;
 using System.Diagnostics;
 using System.Windows.Documents;
+using WPFMessenger.UI;
 
 namespace WPFMessenger
 {
@@ -13,6 +14,10 @@ namespace WPFMessenger
 
         private IList<MSNUser> listUsers;
         private string rootTitle;
+
+        private Dictionary<string, MSNUser> dicTreeItems;
+
+        private TalkManager talkManager;
 
         internal IList<MSNUser> ListUsers
         {
@@ -24,7 +29,8 @@ namespace WPFMessenger
         {
             InitializeComponent();
             rootTitle = treeItemRoot.Header.ToString();
-            LoadRSS();
+            talkManager = new TalkManager();
+            //LoadRSS();
         }
 
 
@@ -68,12 +74,27 @@ namespace WPFMessenger
         {
             TreeViewItem node;
 
+            dicTreeItems = new Dictionary<string, MSNUser>();
+
             foreach (MSNUser user in listUsers)
             {
                node = new TreeViewItem();
-               node.Header = String.Format("{0} (usuário {1})",user.UserName, user.UserID);
+               node.Header = String.Format("{0} (id: {1})",user.UserName, user.UserID);
+               node.FontSize = 12;
+               node.Selected += ShowTalkWindow;
                treeItemRoot.Items.Add(node);
+               dicTreeItems.Add(node.Header.ToString(), user);
             }
+
+            treeItemRoot.IsExpanded = true;
+        }
+
+        private void ShowTalkWindow(object sender, RoutedEventArgs e)
+        {
+
+            TreeViewItem selectedItem = (TreeViewItem)treeUsers.SelectedItem;
+
+            talkManager.addTalk(dicTreeItems[selectedItem.Header.ToString()]);
         }
 
     }
