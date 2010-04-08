@@ -43,7 +43,7 @@
             </StackPanel.Triggers>
 
             <TreeView Name="treeUsers" BorderThickness="0" Height="345" MaxHeight="1000">
-                <TreeViewItem Header="Usuários Logados (x)" FontSize="15" Foreground="CadetBlue" Name="treeItemRoot"/>
+                <TreeViewItem Header="Usuários Logados (x)" FontSize="15" Foreground="CadetBlue" Name="treeItemRoot" IsHitTestVisible="True" />
             </TreeView>
 
             <Expander x:Name="expander" Header="Notícias FURB" MaxHeight="120" Background="Lavender" Foreground="Black">

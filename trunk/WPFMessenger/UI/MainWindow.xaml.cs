@@ -30,7 +30,7 @@ namespace WPFMessenger
             InitializeComponent();
             rootTitle = treeItemRoot.Header.ToString();
             talkManager = new TalkManager();
-            //LoadRSS();
+            LoadRSS();
         }
 
 
