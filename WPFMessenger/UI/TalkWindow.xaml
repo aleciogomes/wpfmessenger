@@ -1,9 +1,8 @@
 ﻿<Window x:Class="WPFMessenger.UI.TalkWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Teste - Conversa" Height="490" Width="701" Icon="/WPFMessenger;component/images/chat.png">
-    
-    
+    Title="" Height="490" Width="701" Icon="/WPFMessenger;component/images/chat.png"
+    >   
     
     <DockPanel LastChildFill="True">
         
@@ -35,7 +34,7 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
-                <TextBox Name="textBox1" />
+                <TextBox Name="textBoard" IsReadOnly="True" />
             </Grid>
             
             <Grid Grid.Row="1">
@@ -44,7 +43,7 @@
                     <ColumnDefinition Width="75"/>
                 </Grid.ColumnDefinitions>
                 <TextBox Grid.Row="1" Grid.Column="0" Name="msgBox" />
-                <Button Grid.Row="1" Grid.Column="1" Name="btEnviar" >Enviar</Button>
+                <Button Grid.Row="1" Grid.Column="1" Name="btEnviar" Click="btEnviar_Click">Enviar</Button>
             </Grid>
 
            

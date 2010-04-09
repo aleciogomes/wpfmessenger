@@ -96,10 +96,8 @@ namespace WPFMessenger
 
         private void ValidateConnect(object sender, DoWorkEventArgs e)
         {
-
-            //e.Result = tcp.Connect();
-            e.Result = true;
-
+            e.Result = tcp.Connect();
+            //e.Result = true;
         }
 
 
@@ -110,7 +108,7 @@ namespace WPFMessenger
 
             if (connected)
             {
-                MainWindow main = new MainWindow();
+                MainWindow main = new MainWindow(user);
                 main.ListUsers = tcp.GetListUsers();
                 main.Show();
 

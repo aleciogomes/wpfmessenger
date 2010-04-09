@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using WPFMessenger.Core;
+using System;
 
 namespace WPFMessenger.UI
 {
@@ -18,9 +9,62 @@ namespace WPFMessenger.UI
     /// </summary>
     public partial class TalkWindow : Window
     {
-        public TalkWindow()
+
+        private TCPConnection tcp;
+
+        private MSNUser currentUser;
+
+        private MSNUser destinyUser;
+
+        internal MSNUser User
         {
-            InitializeComponent();
+            get { return currentUser; }
+            set{ currentUser = value;}
         }
+
+        internal MSNUser DestinyUser
+        {
+            get { return destinyUser; }
+            set { 
+                    destinyUser = value;
+                    this.Title = String.Format("{0} - Conversa", destinyUser.UserName);
+                }
+        }
+
+        internal TCPConnection Tcp
+        {
+            get { return tcp; }
+            set { tcp = value; }
+        }
+
+        public TalkWindow(MSNUser me, MSNUser destiny)
+        {
+            User = me;
+            DestinyUser = destiny;
+
+            InitializeComponent();
+            Closing += Window_Closing;
+            tcp = new TCPConnection();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            Visibility = Visibility.Collapsed;
+        }
+
+        private void btEnviar_Click(object sender, RoutedEventArgs e)
+        {
+            string message = msgBox.Text.ToString();
+
+            tcp.SendMessage(this.destinyUser, message);
+            msgBox.Clear();
+
+            textBoard.Text += message;
+            textBoard.Text += System.Environment.NewLine;
+
+            tcp.teste(currentUser);
+        }
+
     }
 }

@@ -12,6 +12,8 @@ namespace WPFMessenger
     public partial class MainWindow : Window
     {
 
+        private MSNUser currentUser;
+
         private IList<MSNUser> listUsers;
         private string rootTitle;
 
@@ -25,11 +27,12 @@ namespace WPFMessenger
             set { listUsers = value; }
         }
 
-        public MainWindow()
+        public MainWindow(MSNUser me)
         {
+            this.currentUser = me;
             InitializeComponent();
             rootTitle = treeItemRoot.Header.ToString();
-            talkManager = new TalkManager();
+            talkManager = new TalkManager(me);
             LoadRSS();
         }
 
