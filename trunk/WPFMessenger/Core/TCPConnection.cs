@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Net;
 
 namespace WPFMessenger.Core
 {
@@ -26,9 +27,12 @@ namespace WPFMessenger.Core
             set { user = value; }
         }
 
+        private int port = 1012;
+
         private string serverURL = "larc.inf.furb.br";
 
         private string getUsrString = "GET USRS ";
+        private string getMsgString = "SEND MSG ";
 
         public bool Connect()
         {
@@ -37,7 +41,7 @@ namespace WPFMessenger.Core
                 TcpClient tcpclnt = new TcpClient();
                 Console.WriteLine("Conectando.....");
 
-                tcpclnt.Connect(serverURL, 1012);
+                tcpclnt.Connect(serverURL, port);
 
                 Console.WriteLine("Conectado!");
 
@@ -122,6 +126,59 @@ namespace WPFMessenger.Core
 
             return list;
 
+        }
+
+        public bool SendMessage(MSNUser destintyUser, string message)
+        {
+            try
+            {
+                string command = String.Format("{0}{1}:{2}", this.getMsgString, destintyUser.UserID, message);
+                byte[] data = Encoding.ASCII.GetBytes(command);
+
+                IPEndPoint ip = new IPEndPoint(IPAddress.Parse(serverURL), port);
+
+                Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                server.SendTo(data, data.Length, SocketFlags.None, ip);
+
+                server.Close();
+
+                return true;
+            }
+            catch (Exception erro)
+            {
+                Console.WriteLine("Erro: " + erro.StackTrace);
+                return false;
+            }
+        }
+
+        public void teste(MSNUser user)
+        {
+            TcpClient tcpclnt = new TcpClient();
+            tcpclnt.Connect(serverURL, port);
+
+            Stream stm = tcpclnt.GetStream();
+
+            ASCIIEncoding asen = new ASCIIEncoding();
+            string command = String.Format("{0}{1}:{2}", "GET MSG ", user.UserID, user.UserPassword);
+
+            byte[] ba = asen.GetBytes(command);
+
+
+            stm.Write(ba, 0, ba.Length);
+
+            byte[] bb = new byte[100];
+            int k = stm.Read(bb, 0, 100);
+
+            StringBuilder retorno = new StringBuilder();
+
+            for (int i = 0; i < k; i++)
+            {
+                retorno.Append(Convert.ToChar(bb[i]).ToString());
+            }
+
+            Console.WriteLine(retorno);
+
+            tcpclnt.Close();
         }
 
     }
