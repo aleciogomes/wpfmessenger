@@ -9,35 +9,25 @@ namespace WPFMessenger.Core
     class TalkManager
     {
 
-        private MSNUser currentUser;
-
         private Dictionary<MSNUser, TalkWindow> talkList;
-
-        internal MSNUser User
-        {
-            get { return currentUser; }
-            set { currentUser = value; }
-        }
-
         public Dictionary<MSNUser, TalkWindow> TalkList
         {
             get { return talkList; }
             set { talkList = value; }
         }
 
-        public TalkManager(MSNUser me)
+        public TalkManager()
         {
-            User = me;
             talkList = new Dictionary<MSNUser, TalkWindow>();
         }
 
-        public void addTalk(MSNUser destiny)
+        public TalkWindow addTalk(MSNUser destiny)
         {
             TalkWindow selectedWindow;
 
             if (!talkList.ContainsKey(destiny))
             {
-                selectedWindow = new TalkWindow(currentUser, destiny);
+                selectedWindow = new TalkWindow(destiny);
                 talkList.Add(destiny, selectedWindow);
             }
             else
@@ -45,7 +35,7 @@ namespace WPFMessenger.Core
                 selectedWindow = talkList[destiny];
             }
 
-            selectedWindow.Show();
+            return selectedWindow;
         }
 
     }

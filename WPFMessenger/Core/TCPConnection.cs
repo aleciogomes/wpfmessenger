@@ -10,82 +10,26 @@ namespace WPFMessenger.Core
 
     public delegate bool TCPConnectionCaller();
 
-    class TCPConnection
+    public class TCPConnection
     {
         /*USUARIOS E SENHAS
          * 3299 / 12qnmn
          * 7237 / ht7mxh
          * 
          */
-        private static string errorMsg = "Erro: Id inválido: ";
         private string returnString;
-        private MSNUser user;
-
-        public MSNUser User
-        {
-            get { return user; }
-            set { user = value; }
-        }
 
         private int port = 1012;
 
+        private string errorMsg = "Erro: Id inválido: ";
         private string serverURL = "larc.inf.furb.br";
-
         private string getUsrString = "GET USRS ";
-        private string getMsgString = "SEND MSG ";
 
-        public bool Connect()
+        private TcpClient tcpclnt;
+
+        public TCPConnection()
         {
-            try
-            {
-                TcpClient tcpclnt = new TcpClient();
-                Console.WriteLine("Conectando.....");
-
-                tcpclnt.Connect(serverURL, port);
-
-                Console.WriteLine("Conectado!");
-
-                Stream stm = tcpclnt.GetStream();
-
-                ASCIIEncoding asen = new ASCIIEncoding();
-                string command = String.Format("{0}{1}:{2}", this.getUsrString, user.UserID, user.UserPassword);
-
-                byte[] ba = asen.GetBytes(command);
-
-                Console.WriteLine("Transmitindo.....");
-
-                stm.Write(ba, 0, ba.Length);
-
-                byte[] bb = new byte[100];
-                int k = stm.Read(bb, 0, 100);
-
-                StringBuilder retorno = new StringBuilder();
-
-                for (int i = 0; i < k; i++)
-                {
-                    retorno.Append(Convert.ToChar(bb[i]).ToString());
-                }
-
-                tcpclnt.Close();
-
-                //Erro: Id inválido: GET USRS  111:teste123
-
-                returnString = retorno.ToString();
-
-                if (returnString.Equals(String.Format("{0}{1}", errorMsg, command)))
-                {
-                    return false;
-                }
-
-                return true;
-            }
-
-            catch (Exception erro)
-            {
-                Console.WriteLine("Erro: " + erro.StackTrace);
-                return false;
-            }
-
+            tcpclnt = new TcpClient();
         }
 
         public IList<MSNUser> GetListUsers()
@@ -97,7 +41,7 @@ namespace WPFMessenger.Core
             if (!String.IsNullOrEmpty(returnString))
             {
                 string[] returnVector = returnString.Split(new char[] { ':' });
-                string value = "";   
+                string value = "";
 
                 for (int i = 0; i < returnVector.Length; i++)
                 {
@@ -119,66 +63,82 @@ namespace WPFMessenger.Core
                 }
             }
 
+            /*
             user = new MSNUser();
             user.UserID = 45;
             user.UserName = "Teste";
             list.Add(user);
+            */
 
             return list;
 
         }
 
-        public bool SendMessage(MSNUser destintyUser, string message)
+        public bool Connect()
+        {
+            string command = String.Format("{0}{1}:{2}", this.getUsrString, MSNSession.User.UserID, MSNSession.User.UserPassword);
+            returnString = StabilishConnection(command);
+
+            if (returnString.Equals(String.Format("{0}{1}", errorMsg, command)))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        }
+
+        public String GetMyMessages()
+        {
+            string command = String.Format("{0}{1}:{2}", "GET MSG ", MSNSession.User.UserID, MSNSession.User.UserPassword);
+            return StabilishConnection(command);
+        }
+
+        private String StabilishConnection(String command)
         {
             try
             {
-                string command = String.Format("{0}{1}:{2}", this.getMsgString, destintyUser.UserID, message);
-                byte[] data = Encoding.ASCII.GetBytes(command);
+                //Console.WriteLine("Conectando.....");
+                tcpclnt.Connect(serverURL, port);
+                //Console.WriteLine("Conectado!");
+                Stream stm = tcpclnt.GetStream();
 
-                IPEndPoint ip = new IPEndPoint(IPAddress.Parse(serverURL), port);
+                ASCIIEncoding asen = new ASCIIEncoding();
 
-                Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                server.SendTo(data, data.Length, SocketFlags.None, ip);
+                byte[] ba = asen.GetBytes(command);
 
-                server.Close();
+                //Console.WriteLine("Transmitindo.....");
 
-                return true;
+                stm.Write(ba, 0, ba.Length);
+
+                string message = ConvertMessage(stm);
+
+                tcpclnt.Close();
+
+                return message;
             }
             catch (Exception erro)
             {
                 Console.WriteLine("Erro: " + erro.StackTrace);
-                return false;
+                return errorMsg;
             }
         }
 
-        public void teste(MSNUser user)
+        private String ConvertMessage(Stream stream)
         {
-            TcpClient tcpclnt = new TcpClient();
-            tcpclnt.Connect(serverURL, port);
+            byte[] bb = new byte[1000];
+            int index = stream.Read(bb, 0, 100);
 
-            Stream stm = tcpclnt.GetStream();
+            StringBuilder message = new StringBuilder();
 
-            ASCIIEncoding asen = new ASCIIEncoding();
-            string command = String.Format("{0}{1}:{2}", "GET MSG ", user.UserID, user.UserPassword);
-
-            byte[] ba = asen.GetBytes(command);
-
-
-            stm.Write(ba, 0, ba.Length);
-
-            byte[] bb = new byte[100];
-            int k = stm.Read(bb, 0, 100);
-
-            StringBuilder retorno = new StringBuilder();
-
-            for (int i = 0; i < k; i++)
+            for (int i = 0; i < index; i++)
             {
-                retorno.Append(Convert.ToChar(bb[i]).ToString());
+                message.Append(Convert.ToChar(bb[i]).ToString());
             }
 
-            Console.WriteLine(retorno);
-
-            tcpclnt.Close();
+            return message.ToString();
         }
 
     }

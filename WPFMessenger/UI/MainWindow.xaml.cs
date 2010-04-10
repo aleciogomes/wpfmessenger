@@ -6,34 +6,65 @@ using System;
 using System.Diagnostics;
 using System.Windows.Documents;
 using WPFMessenger.UI;
+using System.ComponentModel;
+using System.Threading;
 
 namespace WPFMessenger
 {
     public partial class MainWindow : Window
     {
 
-        private MSNUser currentUser;
+        public IList<MSNUser> listUsers;
 
-        private IList<MSNUser> listUsers;
+        public TCPConnection TCP { get; set; }
+
         private string rootTitle;
 
         private Dictionary<string, MSNUser> dicTreeItems;
 
         private TalkManager talkManager;
 
-        internal IList<MSNUser> ListUsers
+        //atualiza lista de usuários a cada 6 segundos
+        private int timeRefreshUsers = 6000;
+
+        private bool firstRefresh = true;
+
+        public MainWindow()
         {
-            get { return listUsers; }
-            set { listUsers = value; }
+            InitializeComponent();
+
+            Closing += Window_Closing;
+
+            rootTitle = treeItemRoot.Header.ToString();
+
+            dicTreeItems = new Dictionary<string, MSNUser>();
+
+            talkManager = new TalkManager();
+            LoadRSS();
         }
 
-        public MainWindow(MSNUser me)
+        private void IntializerRefresher()
         {
-            this.currentUser = me;
-            InitializeComponent();
-            rootTitle = treeItemRoot.Header.ToString();
-            talkManager = new TalkManager(me);
-            LoadRSS();
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += RefreshUsers;
+            bw.RunWorkerCompleted += LoadTreeView;
+            bw.RunWorkerAsync();
+        }
+
+        private void RefreshUsers(object sender, DoWorkEventArgs e)
+        {
+            if (!firstRefresh)
+            {
+                Thread.Sleep(timeRefreshUsers);
+            }
+            else
+            {
+                firstRefresh = false;
+            }
+
+            listUsers = TCP.GetListUsers();
+
+            Console.WriteLine(String.Format("Atualizou lista de usuários: {0}", System.DateTime.Now));
         }
 
 
@@ -43,9 +74,14 @@ namespace WPFMessenger
             e.Handled = true;
         }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadTreeView();
+            IntializerRefresher();
         }
 
         private void LoadRSS()
@@ -57,11 +93,20 @@ namespace WPFMessenger
             Hyperlink link = null;
             TextBlock block;
 
+            int startIndex;
+
+            RSSNews news;
+
             for (int i = 0; i < r.ListNews.Count && i < 5; i++)
             {
-                texto = new Run(String.Format("{0}...", r.ListNews[i].Title.Remove(45)));
+
+                news = r.ListNews[i];
+
+                startIndex = (news.Title.Length-1 >= 45 ? 45 : news.Title.Length-1);
+
+                texto = new Run(String.Format("{0}...", news.Title.Remove(startIndex)));
                 link = new Hyperlink(texto);
-                link.NavigateUri = new Uri(r.ListNews[i].Link);
+                link.NavigateUri = new Uri(news.Link);
                 link.RequestNavigate += Hyperlink_RequestNavigate;
 
                 link.Style = (Style)FindResource("LinkStyle");
@@ -73,31 +118,50 @@ namespace WPFMessenger
             }
         }
 
-        private void LoadTreeView()
+        public void LoadTreeView(object sender, RunWorkerCompletedEventArgs e)
         {
             TreeViewItem node;
 
-            dicTreeItems = new Dictionary<string, MSNUser>();
+            String userDisplay = null;
 
             foreach (MSNUser user in listUsers)
             {
-               node = new TreeViewItem();
-               node.Header = String.Format("{0} (id: {1})",user.UserName, user.UserID);
-               node.FontSize = 12;
-               node.Selected += ShowTalkWindow;
-               treeItemRoot.Items.Add(node);
-               dicTreeItems.Add(node.Header.ToString(), user);
+               userDisplay = FormatUserDisplay(user);
+
+               if (!dicTreeItems.ContainsKey(userDisplay))
+               {
+                   node = new TreeViewItem();
+                   node.Header = userDisplay;
+                   node.FontSize = 12;
+                   node.Selected += ShowTalkWindow;
+                   treeItemRoot.Items.Add(node);
+                   dicTreeItems.Add(node.Header.ToString(), user);
+
+                   Console.WriteLine(String.Format("Usuário adicionado: {0}", user.UserName));
+               }
             }
 
             treeItemRoot.IsExpanded = true;
+            rootTitle = rootTitle.Replace("(x)", String.Format("({0})", treeItemRoot.Items.Count));
+
+            treeItemRoot.Header = rootTitle;
+
+            IntializerRefresher();
         }
 
         private void ShowTalkWindow(object sender, RoutedEventArgs e)
         {
-
             TreeViewItem selectedItem = (TreeViewItem)treeUsers.SelectedItem;
 
-            talkManager.addTalk(dicTreeItems[selectedItem.Header.ToString()]);
+            TalkWindow selectedWindow = talkManager.addTalk(dicTreeItems[selectedItem.Header.ToString()]);
+
+            selectedWindow.Show();
+            selectedWindow.Focus();
+        }
+
+        private String FormatUserDisplay(MSNUser user)
+        {
+            return String.Format("{0} (id: {1})", user.UserName, user.UserID);
         }
 
     }

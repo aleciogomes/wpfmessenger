@@ -20,15 +20,13 @@ namespace WPFMessenger
 
     public partial class LoginWindow : Window
     {
-        private MSNUser user;
         private TCPConnection tcp;
 
         public LoginWindow()
         {
-            user = new MSNUser();
-            tcp = new TCPConnection();
+            MSNSession.CreateUser();
 
-            tcp.User = user;
+            tcp = new TCPConnection();
 
             InitializeComponent();
         }
@@ -73,8 +71,8 @@ namespace WPFMessenger
                return;
            }
 
-           user.UserID = userIDValor;
-           user.UserPassword = userPassword.Text.ToString();
+           MSNSession.User.UserID = userIDValor;
+           MSNSession.User.UserPassword = userPassword.Text.ToString();
 
            btLogin.IsEnabled = false;
            userID.IsEnabled = false;
@@ -108,8 +106,9 @@ namespace WPFMessenger
 
             if (connected)
             {
-                MainWindow main = new MainWindow(user);
-                main.ListUsers = tcp.GetListUsers();
+                MainWindow main = new MainWindow();
+                main.TCP = tcp;
+                //main.ListUsers = tcp.GetListUsers();
                 main.Show();
 
                 this.Close();
