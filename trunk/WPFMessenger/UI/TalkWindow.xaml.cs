@@ -11,16 +11,9 @@ namespace WPFMessenger.UI
     {
 
         private TCPConnection tcp;
-
-        private MSNUser currentUser;
+        private UDPConnection udp;
 
         private MSNUser destinyUser;
-
-        internal MSNUser User
-        {
-            get { return currentUser; }
-            set{ currentUser = value;}
-        }
 
         internal MSNUser DestinyUser
         {
@@ -31,39 +24,45 @@ namespace WPFMessenger.UI
                 }
         }
 
-        internal TCPConnection Tcp
+        public TalkWindow(MSNUser destiny)
         {
-            get { return tcp; }
-            set { tcp = value; }
-        }
+            InitializeComponent();
 
-        public TalkWindow(MSNUser me, MSNUser destiny)
-        {
-            User = me;
             DestinyUser = destiny;
 
-            InitializeComponent();
             Closing += Window_Closing;
+            KeyDown += Window_KeyDown;
             tcp = new TCPConnection();
+            udp = new UDPConnection();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = true;
+            if(e != null)
+                e.Cancel = true;
+
             Visibility = Visibility.Collapsed;
+        }
+
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+
+            if (e.Key.ToString() == "Escape")
+                this.Window_Closing(sender, null);
+
         }
 
         private void btEnviar_Click(object sender, RoutedEventArgs e)
         {
             string message = msgBox.Text.ToString();
 
-            tcp.SendMessage(this.destinyUser, message);
+            udp.SendMessage(this.destinyUser, message);
             msgBox.Clear();
 
             textBoard.Text += message;
             textBoard.Text += System.Environment.NewLine;
 
-            tcp.teste(currentUser);
+            Console.WriteLine(tcp.GetMyMessages());
         }
 
     }

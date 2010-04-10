@@ -89,12 +89,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\MSNSession.cs" />
     <Compile Include="Core\PopupManager.cs" />
     <Compile Include="Core\RSSNews.cs" />
     <Compile Include="Core\RSSReader.cs" />
     <Compile Include="Core\TalkManager.cs" />
     <Compile Include="Core\TCPConnection.cs" />
     <Compile Include="Core\MSNUser.cs" />
+    <Compile Include="Core\UDPConnection.cs" />
     <Compile Include="UI\Alerta.xaml.cs">
       <DependentUpon>Alerta.xaml</DependentUpon>
     </Compile>

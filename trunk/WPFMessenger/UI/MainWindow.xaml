@@ -43,6 +43,17 @@
             </StackPanel.Triggers>
 
             <TreeView Name="treeUsers" BorderThickness="0" Height="345" MaxHeight="1000">
+
+                <TreeView.Resources>
+                    <Style TargetType="TreeViewItem">
+                        <Style.Triggers>
+                            <Trigger Property="HasItems" Value="true">
+                                <Setter Property="Focusable" Value="false" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TreeView.Resources>
+
                 <TreeViewItem Header="Usuários Logados (x)" FontSize="15" Foreground="CadetBlue" Name="treeItemRoot" IsHitTestVisible="True" />
             </TreeView>
 
