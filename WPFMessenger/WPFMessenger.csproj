@@ -89,6 +89,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\MSNMessage.cs" />
     <Compile Include="Core\MSNSession.cs" />
     <Compile Include="Core\PopupManager.cs" />
     <Compile Include="Core\RSSNews.cs" />
@@ -131,25 +132,31 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\furbLogo.gif" />
+    <Resource Include="resources\furbLogo.gif" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\wpfmsn.png" />
+    <Resource Include="resources\wpfmsn.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\avatar.png" />
+    <Resource Include="resources\ava.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\ava.png" />
+    <Resource Include="resources\Close.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\Close.png" />
+    <Resource Include="resources\Info.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\Info.png" />
+    <Resource Include="resources\chat.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\chat.png" />
+    <Resource Include="resources\avatar_darth.png" />
+    <Resource Include="resources\avatar_stormtrooper.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\alert.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using WPFMessenger.Core;
 using System;
+using System.Windows.Controls;
 
 namespace WPFMessenger.UI
 {
@@ -9,8 +10,6 @@ namespace WPFMessenger.UI
     /// </summary>
     public partial class TalkWindow : Window
     {
-
-        private TCPConnection tcp;
         private UDPConnection udp;
 
         private MSNUser destinyUser;
@@ -21,6 +20,7 @@ namespace WPFMessenger.UI
             set { 
                     destinyUser = value;
                     this.Title = String.Format("{0} - Conversa", destinyUser.UserName);
+                    this.SetLabelText(lblDestinyUser, destinyUser.UserName);
                 }
         }
 
@@ -32,8 +32,17 @@ namespace WPFMessenger.UI
 
             Closing += Window_Closing;
             KeyDown += Window_KeyDown;
-            tcp = new TCPConnection();
             udp = new UDPConnection();
+
+            this.SetLabelText(lblCurrentUser, MSNSession.User.UserName);
+        }
+
+        private void SetLabelText(TextBlock lbl, string text)
+        {
+            int startIndex = (text.Length - 1 >= 15 ? 15 : text.Length - 1);
+
+            string nome = String.Format("{0}...", text.Remove(startIndex));
+            lbl.Text = nome;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -47,22 +56,45 @@ namespace WPFMessenger.UI
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
 
-            if (e.Key.ToString() == "Escape")
+            if (e.Key.ToString().Equals("Escape"))
+            {
                 this.Window_Closing(sender, null);
+            }
+            else if (msgBox.IsFocused && e.Key.ToString().Equals("Return"))
+            {
+                btEnviar.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }
 
         }
+
 
         private void btEnviar_Click(object sender, RoutedEventArgs e)
         {
             string message = msgBox.Text.ToString();
 
-            udp.SendMessage(this.destinyUser, message);
-            msgBox.Clear();
+            if (!message.Equals(String.Empty))
+            {
+                udp.SendMessage(this.destinyUser, message);
+                msgBox.Clear();
+
+                this.InsertMessage(MSNSession.User, message);
+            }
+
+        }
+
+        public void InsertMessage(MSNUser user, string newMessage)
+        {
+            string message = String.Format("({0}) {1} diz:", System.DateTime.Now, user.UserName);
+
+            message += System.Environment.NewLine;
+
+            //tab
+            message += "\t";
+
+            message += newMessage;
+            message += System.Environment.NewLine;
 
             textBoard.Text += message;
-            textBoard.Text += System.Environment.NewLine;
-
-            Console.WriteLine(tcp.GetMyMessages());
         }
 
     }
