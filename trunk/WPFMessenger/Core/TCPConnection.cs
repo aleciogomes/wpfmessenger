@@ -10,38 +10,27 @@ namespace WPFMessenger.Core
 
     public delegate bool TCPConnectionCaller();
 
-    public class TCPConnection
+    public static class TCPConnection
     {
-        /*USUARIOS E SENHAS
-         * 3299 / 12qnmn
-         * 7237 / ht7mxh
-         * 
-         */
-        private string returnString;
 
-        private int port = 1012;
+        private static int port = 1012;
 
-        private string errorMsg = "Erro: Id inválido: ";
-        private string serverURL = "larc.inf.furb.br";
-        private string getUsrString = "GET USRS ";
+        private static string errorMsg = "Erro: Id inválido: ";
+        private static string serverURL = "larc.inf.furb.br";
+        private static string getUsrString = "GET USRS ";
 
-        private TcpClient tcpclnt;
-
-        public TCPConnection()
-        {
-            tcpclnt = new TcpClient();
-        }
-
-        public IList<MSNUser> GetListUsers()
+        public static IList<MSNUser> GetListUsers()
         {
 
             IList<MSNUser> list = new List<MSNUser>();
             MSNUser user = null;
 
-            if (!String.IsNullOrEmpty(returnString))
+            string returnString = GetUsers();
+
+            if (ValidetConnect(returnString) && !returnString.Equals("0::"))
             {
                 string[] returnVector = returnString.Split(new char[] { ':' });
-                string value = "";
+                string value = null;
 
                 for (int i = 0; i < returnVector.Length; i++)
                 {
@@ -74,34 +63,101 @@ namespace WPFMessenger.Core
 
         }
 
-        public bool Connect()
+        public static bool Connect()
         {
-            string command = String.Format("{0}{1}:{2}", this.getUsrString, MSNSession.User.UserID, MSNSession.User.UserPassword);
-            returnString = StabilishConnection(command);
 
-            if (returnString.Equals(String.Format("{0}{1}", errorMsg, command)))
+            IList<MSNUser> lista = GetListUsers();
+
+            if (lista.Count > 0)
             {
+
+                foreach (MSNUser user in lista)
+                {
+                    if (user.UserID == MSNSession.User.UserID)
+                    {
+                        MSNSession.User.UserName = user.UserName;
+                        return true;
+                    }
+                }
+
                 return false;
             }
             else
             {
+
+                return false;
+            }
+        }
+
+        private static bool ValidetConnect(string returnString)
+        {
+            string command = String.Format("{0}{1}:{2}", getUsrString, MSNSession.User.UserID, MSNSession.User.UserPassword);
+            if (!String.IsNullOrEmpty(returnString) && !returnString.Equals(String.Format("{0}{1}", errorMsg, command)))
+            {
                 return true;
             }
-
+            else
+            {
+                return false;
+            }
         }
 
-        public String GetMyMessages()
+        private static String GetUsers()
         {
-            string command = String.Format("{0}{1}:{2}", "GET MSG ", MSNSession.User.UserID, MSNSession.User.UserPassword);
-            return StabilishConnection(command);
+            string cmd = String.Format("{0}{1}:{2}", getUsrString, MSNSession.User.UserID, MSNSession.User.UserPassword);
+            return StabilishConnection(cmd);
         }
 
-        private String StabilishConnection(String command)
+        public static IList<MSNMessage> GetMyMessages()
+        {
+            string cmd = String.Format("{0}{1}:{2}", "GET MSG ", MSNSession.User.UserID, MSNSession.User.UserPassword);
+
+            string messageString = StabilishConnection(cmd);
+            string value = null;
+
+            IList<MSNMessage> lista = new List<MSNMessage>();
+            MSNMessage message = null;
+
+            while (!messageString.Equals("0:"))
+            {
+                string[] returnVector = messageString.Split(new char[] { ':' });
+
+                message = new MSNMessage();
+
+                for (int i = 0; i < returnVector.Length; i++)
+                {
+                    value = returnVector[i].ToString();
+
+                    if (!String.IsNullOrEmpty(value))
+                    {
+                        if (i % 2 != 0)
+                        {
+                            message.Message = value;
+                        }
+                        else
+                        {
+                            message.Forwarder = Int32.Parse(value); ;
+                        }
+                    }
+
+                }
+
+                lista.Add(message);
+                messageString = StabilishConnection(cmd);
+
+            }
+
+            return lista;
+        }
+
+        private static String StabilishConnection(String command)
         {
             try
             {
+                TcpClient tcpclnt = new TcpClient();
                 //Console.WriteLine("Conectando.....");
                 tcpclnt.Connect(serverURL, port);
+
                 //Console.WriteLine("Conectado!");
                 Stream stm = tcpclnt.GetStream();
 
@@ -110,7 +166,6 @@ namespace WPFMessenger.Core
                 byte[] ba = asen.GetBytes(command);
 
                 //Console.WriteLine("Transmitindo.....");
-
                 stm.Write(ba, 0, ba.Length);
 
                 string message = ConvertMessage(stm);
@@ -126,7 +181,7 @@ namespace WPFMessenger.Core
             }
         }
 
-        private String ConvertMessage(Stream stream)
+        private static String ConvertMessage(Stream stream)
         {
             byte[] bb = new byte[1000];
             int index = stream.Read(bb, 0, 100);

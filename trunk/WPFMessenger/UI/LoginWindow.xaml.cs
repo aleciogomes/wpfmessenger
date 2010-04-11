@@ -20,13 +20,10 @@ namespace WPFMessenger
 
     public partial class LoginWindow : Window
     {
-        private TCPConnection tcp;
 
         public LoginWindow()
         {
             MSNSession.CreateUser();
-
-            tcp = new TCPConnection();
 
             InitializeComponent();
         }
@@ -46,7 +43,7 @@ namespace WPFMessenger
             userPassword.Foreground = new SolidColorBrush(Colors.Black);
             userPassword.GotFocus -= userPassword_GotFocus;
 
-            userPassword.Text = "ht7mxh";
+            userPassword.Password = "ht7mxh";
         }
 
         private void btLogin_Click(object sender, RoutedEventArgs e)
@@ -56,7 +53,7 @@ namespace WPFMessenger
            userID.Focus();
            userPassword.Focus();
 
-           if (String.IsNullOrEmpty(userPassword.Text.ToString())|| String.IsNullOrEmpty(userID.Text.ToString()))
+           if (String.IsNullOrEmpty(userPassword.Password.ToString()) || String.IsNullOrEmpty(userID.Text.ToString()))
            {
                userPassword.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
                MessageBox.Show("Informe seu ID e sua Senha.");
@@ -72,7 +69,7 @@ namespace WPFMessenger
            }
 
            MSNSession.User.UserID = userIDValor;
-           MSNSession.User.UserPassword = userPassword.Text.ToString();
+           MSNSession.User.UserPassword = userPassword.Password.ToString();
 
            btLogin.IsEnabled = false;
            userID.IsEnabled = false;
@@ -94,7 +91,7 @@ namespace WPFMessenger
 
         private void ValidateConnect(object sender, DoWorkEventArgs e)
         {
-            e.Result = tcp.Connect();
+            e.Result = TCPConnection.Connect();
             //e.Result = true;
         }
 
@@ -107,8 +104,6 @@ namespace WPFMessenger
             if (connected)
             {
                 MainWindow main = new MainWindow();
-                main.TCP = tcp;
-                //main.ListUsers = tcp.GetListUsers();
                 main.Show();
 
                 this.Close();

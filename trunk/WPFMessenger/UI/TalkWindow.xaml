@@ -1,9 +1,8 @@
 ﻿<Window x:Class="WPFMessenger.UI.TalkWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="" Height="490" Width="701" Icon="/WPFMessenger;component/images/chat.png"
-    Background="Lavender"
-    >   
+    Title="" Height="490" Width="701" Icon="/WPFMessenger;component/resources/chat.png"
+    Background="Lavender" Topmost="true">   
     
     <DockPanel LastChildFill="True">
         
@@ -19,17 +18,29 @@
         </DockPanel.Triggers>
         
         <Expander x:Name="expander"  IsExpanded="true" ExpandDirection="Left">
-            <StackPanel x:Name="panelUsers"  DockPanel.Dock="Right" Width="133"  Background="Lavender">
 
-                <StackPanel.LayoutTransform>
-                    <ScaleTransform ScaleX="1" ScaleY="1"/>
-                </StackPanel.LayoutTransform>
+                <Grid x:Name="panelUsers"  DockPanel.Dock="Right" Width="130"  Background="Lavender">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="100"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="100"/>
+                    </Grid.RowDefinitions>
 
-                <Border Height="64" Margin="25,10,0,0" VerticalAlignment="Top" BorderThickness="0.1" CornerRadius="2,2,2,2" Background="Chartreuse" HorizontalAlignment="Left" Width="80">
-                    <Image Height="55" HorizontalAlignment="Left" Margin="5,5,5,5" Stretch="Fill" VerticalAlignment="Top" IsEnabled="True" Source="/WPFMessenger;component/images/avatar.png" />
-                </Border>
+                    <Grid Grid.Row="0">
+                        <TextBlock Margin="0,80,0,0" Width="130" HorizontalAlignment="Center" Foreground="CornflowerBlue" Name="lblDestinyUser" TextAlignment="Center">Nome do Usuário</TextBlock>
+                        <Border Height="75" Margin="25,5,0,0" VerticalAlignment="Top" BorderThickness="0.1" CornerRadius="2,2,2,2" Background="CornflowerBlue" HorizontalAlignment="Left" Width="80">
+                            <Image HorizontalAlignment="Left" Margin="5,5,5,5" Stretch="Fill" VerticalAlignment="Top" IsEnabled="True" Source="/WPFMessenger;component/resources/avatar_stormtrooper.png" />
+                        </Border>
+                    </Grid>
 
-            </StackPanel>
+                    <Grid Grid.Row="2">
+                        <TextBlock  Margin="0,80,0,0" Width="130" HorizontalAlignment="Center" Foreground="IndianRed" Name="lblCurrentUser" TextAlignment="Center">Nome do Usuário</TextBlock>
+                        <Border Height="75" Margin="25,5,0,0" VerticalAlignment="Top" BorderThickness="0.1" CornerRadius="2,2,2,2" Background="IndianRed" HorizontalAlignment="Left" Width="80">
+                            <Image HorizontalAlignment="Left" Margin="5,5,5,5" Stretch="Fill" VerticalAlignment="Top" IsEnabled="True" Source="/WPFMessenger;component/resources/avatar_darth.png" />
+                        </Border>
+                    </Grid>
+                </Grid>
+
         </Expander>
         
         <Grid DockPanel.Dock="Bottom">
@@ -50,9 +61,6 @@
                 <TextBox Grid.Row="1" Grid.Column="0" Name="msgBox" />
                 <Button Grid.Row="1" Grid.Column="1" Name="btEnviar" Click="btEnviar_Click">Enviar</Button>
             </Grid>
-
-           
-
         </Grid>
     </DockPanel>
 </Window>

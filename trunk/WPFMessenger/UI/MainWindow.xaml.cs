@@ -16,8 +16,6 @@ namespace WPFMessenger
 
         public IList<MSNUser> listUsers;
 
-        public TCPConnection TCP { get; set; }
-
         private string rootTitle;
 
         private Dictionary<string, MSNUser> dicTreeItems;
@@ -25,7 +23,7 @@ namespace WPFMessenger
         private TalkManager talkManager;
 
         //atualiza lista de usuários a cada 6 segundos
-        private int timeRefreshUsers = 6000;
+        private int timeRefreshUsers = 6;
 
         private bool firstRefresh = true;
 
@@ -39,12 +37,22 @@ namespace WPFMessenger
 
             dicTreeItems = new Dictionary<string, MSNUser>();
 
+            this.lblUsuario.Text= MSNSession.User.UserID.ToString();
+            this.lblNome.Text = MSNSession.User.UserName;
+
             talkManager = new TalkManager();
             LoadRSS();
         }
 
+        #region Busca listagem de usuários
+
         private void IntializerRefresher()
         {
+
+            //verifica se existem novas mensagens para o usuário logado
+            talkManager.IntializerMsgRefresher();
+
+            //verifica se existem novos usuários logados
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += RefreshUsers;
             bw.RunWorkerCompleted += LoadTreeView;
@@ -55,18 +63,60 @@ namespace WPFMessenger
         {
             if (!firstRefresh)
             {
-                Thread.Sleep(timeRefreshUsers);
+                Thread.Sleep(timeRefreshUsers * 1000);
             }
             else
             {
                 firstRefresh = false;
             }
 
-            listUsers = TCP.GetListUsers();
+            //Console.WriteLine(String.Format("Atualizou lista de usuários: {0}", System.DateTime.Now));
 
-            Console.WriteLine(String.Format("Atualizou lista de usuários: {0}", System.DateTime.Now));
+            listUsers = TCPConnection.GetListUsers();
         }
 
+
+        public void LoadTreeView(object sender, RunWorkerCompletedEventArgs e)
+        {
+            TreeViewItem node;
+
+            String userDisplay = null;
+
+            //this.lblNome.Text = MSNSession.User.UserName;
+
+            foreach (MSNUser user in listUsers)
+            {
+                userDisplay = FormatUserDisplay(user);
+
+                if (!dicTreeItems.ContainsKey(userDisplay))
+                {
+                    node = new TreeViewItem();
+                    node.Header = userDisplay;
+                    node.FontSize = 12;
+                    node.PreviewMouseDoubleClick += ShowTalkWindow;
+                    treeItemRoot.Items.Add(node);
+
+                    dicTreeItems.Add(node.Header.ToString(), user);
+                    talkManager.UserList.Add(user.UserID, user);
+
+                    //Console.WriteLine(String.Format("Usuário adicionado: {0}", user.UserName));
+                }
+            }
+
+            treeItemRoot.IsExpanded = true;
+            rootTitle = rootTitle.Replace("(0)", String.Format("({0})", treeItemRoot.Items.Count));
+
+            treeItemRoot.Header = rootTitle;
+
+            IntializerRefresher();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            IntializerRefresher();
+        }
+
+        #endregion
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
@@ -77,11 +127,6 @@ namespace WPFMessenger
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Application.Current.Shutdown();
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            IntializerRefresher();
         }
 
         private void LoadRSS()
@@ -118,37 +163,6 @@ namespace WPFMessenger
             }
         }
 
-        public void LoadTreeView(object sender, RunWorkerCompletedEventArgs e)
-        {
-            TreeViewItem node;
-
-            String userDisplay = null;
-
-            foreach (MSNUser user in listUsers)
-            {
-               userDisplay = FormatUserDisplay(user);
-
-               if (!dicTreeItems.ContainsKey(userDisplay))
-               {
-                   node = new TreeViewItem();
-                   node.Header = userDisplay;
-                   node.FontSize = 12;
-                   node.Selected += ShowTalkWindow;
-                   treeItemRoot.Items.Add(node);
-                   dicTreeItems.Add(node.Header.ToString(), user);
-
-                   Console.WriteLine(String.Format("Usuário adicionado: {0}", user.UserName));
-               }
-            }
-
-            treeItemRoot.IsExpanded = true;
-            rootTitle = rootTitle.Replace("(x)", String.Format("({0})", treeItemRoot.Items.Count));
-
-            treeItemRoot.Header = rootTitle;
-
-            IntializerRefresher();
-        }
-
         private void ShowTalkWindow(object sender, RoutedEventArgs e)
         {
             TreeViewItem selectedItem = (TreeViewItem)treeUsers.SelectedItem;
@@ -156,7 +170,6 @@ namespace WPFMessenger
             TalkWindow selectedWindow = talkManager.addTalk(dicTreeItems[selectedItem.Header.ToString()]);
 
             selectedWindow.Show();
-            selectedWindow.Focus();
         }
 
         private String FormatUserDisplay(MSNUser user)
