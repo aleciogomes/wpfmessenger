@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using WPFMessenger.UI;
 using System.ComponentModel;
 using System.Threading;
+using System.Windows.Media;
 
 namespace WPFMessenger
 {
@@ -42,6 +43,25 @@ namespace WPFMessenger
 
             talkManager = new TalkManager();
             LoadRSS();
+
+            //cria o usuário 'TODOS'
+            MSNUser user = new MSNUser();
+            user.UserID = 0;
+            user.UserName = "Todos os usuários";
+
+            TreeViewItem node = new TreeViewItem();
+            node.Header = user.UserName;
+            node.FontSize = 12;
+            node.Foreground = new SolidColorBrush(Colors.LimeGreen);
+            node.PreviewMouseDoubleClick += ShowTalkWindow;
+            treeItemRoot.Items.Add(node);
+
+            dicTreeItems.Add(node.Header.ToString(), user);
+            talkManager.UserList.Add(user.UserID, user);
+
+            treeItemRoot.IsExpanded = true;
+            treeItemRoot.Header = rootTitle.Replace("(0)", String.Format("({0})", treeItemRoot.Items.Count));
+
         }
 
         #region Busca listagem de usuários
@@ -82,8 +102,6 @@ namespace WPFMessenger
 
             String userDisplay = null;
 
-            //this.lblNome.Text = MSNSession.User.UserName;
-
             foreach (MSNUser user in listUsers)
             {
                 userDisplay = FormatUserDisplay(user);
@@ -103,10 +121,7 @@ namespace WPFMessenger
                 }
             }
 
-            treeItemRoot.IsExpanded = true;
-            rootTitle = rootTitle.Replace("(0)", String.Format("({0})", treeItemRoot.Items.Count));
-
-            treeItemRoot.Header = rootTitle;
+            treeItemRoot.Header = rootTitle.Replace("(0)", String.Format("({0})", treeItemRoot.Items.Count));
 
             IntializerRefresher();
         }
