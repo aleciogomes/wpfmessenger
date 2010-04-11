@@ -85,7 +85,8 @@ namespace WPFMessenger.Core
             mp.Stop();
             mp.Play();
 
-            TalkWindow window = TalkList[ownerUser];
+            TalkWindow window = null;
+            TalkList.TryGetValue(ownerUser, out window);
 
             if (window == null)
             {
