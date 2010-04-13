@@ -13,6 +13,8 @@ namespace WPFMessenger.Core
     class TalkManager
     {
 
+        private MainWindow main;
+
         private MediaPlayer mp;
 
         private IList<MSNMessage> messageList;
@@ -20,10 +22,11 @@ namespace WPFMessenger.Core
         public Dictionary<MSNUser, TalkWindow> TalkList { get; set; }
         public Dictionary<int, MSNUser> UserList { get; set; }
 
-        public TalkManager()
+        public TalkManager(MainWindow main)
         {
             TalkList = new Dictionary<MSNUser, TalkWindow>();
             UserList = new Dictionary<int, MSNUser>();
+            this.main = main;
 
             mp = new MediaPlayer();
             Uri mp3Adress = new Uri(@".\resources\alert.mp3", UriKind.Relative);
@@ -37,6 +40,7 @@ namespace WPFMessenger.Core
             if (!TalkList.ContainsKey(destiny))
             {
                 selectedWindow = new TalkWindow(destiny);
+                selectedWindow.Owner = main;
                 TalkList.Add(destiny, selectedWindow);
             }
             else
