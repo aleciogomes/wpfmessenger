@@ -41,7 +41,7 @@ namespace WPFMessenger
             this.lblUsuario.Text= MSNSession.User.UserID.ToString();
             this.lblNome.Text = MSNSession.User.UserName;
 
-            talkManager = new TalkManager();
+            talkManager = new TalkManager(this);
             LoadRSS();
 
             //cria o usuário 'TODOS'
@@ -183,7 +183,6 @@ namespace WPFMessenger
             TreeViewItem selectedItem = (TreeViewItem)treeUsers.SelectedItem;
 
             TalkWindow selectedWindow = talkManager.addTalk(dicTreeItems[selectedItem.Header.ToString()]);
-
             selectedWindow.Show();
         }
 

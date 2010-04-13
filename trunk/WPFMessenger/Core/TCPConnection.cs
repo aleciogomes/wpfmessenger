@@ -91,8 +91,7 @@ namespace WPFMessenger.Core
 
         private static bool ValidetConnect(string returnString)
         {
-            string command = String.Format("{0}{1}:{2}", getUsrString, MSNSession.User.UserID, MSNSession.User.UserPassword);
-            if (!String.IsNullOrEmpty(returnString) && !returnString.Equals(String.Format("{0}{1}", errorMsg, command)))
+            if (!String.IsNullOrEmpty(returnString) && !returnString.Equals(errorMsg))
             {
                 return true;
             }
