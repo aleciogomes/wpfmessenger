@@ -34,7 +34,7 @@ namespace WPFMessenger
             userID.Foreground = new SolidColorBrush(Colors.Black);
             userID.GotFocus -= userID_GotFocus;
 
-            userID.Text = "7237";
+            //userID.Text = "7237";
         }
 
         private void userPassword_GotFocus(object sender, RoutedEventArgs e)
@@ -43,7 +43,7 @@ namespace WPFMessenger
             userPassword.Foreground = new SolidColorBrush(Colors.Black);
             userPassword.GotFocus -= userPassword_GotFocus;
 
-            userPassword.Password = "ht7mxh";
+            //userPassword.Password = "ht7mxh";
         }
 
         private void btLogin_Click(object sender, RoutedEventArgs e)
