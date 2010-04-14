@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Net;
+using System.Threading;
 
 namespace WPFMessenger.Core
 {
@@ -91,7 +92,7 @@ namespace WPFMessenger.Core
 
         private static bool ValidetConnect(string returnString)
         {
-            if (!String.IsNullOrEmpty(returnString) && !returnString.Equals(errorMsg))
+            if (!String.IsNullOrEmpty(returnString) && returnString.IndexOf(errorMsg) < 0)
             {
                 return true;
             }
@@ -104,14 +105,14 @@ namespace WPFMessenger.Core
         private static String GetUsers()
         {
             string cmd = String.Format("{0}{1}:{2}", getUsrString, MSNSession.User.UserID, MSNSession.User.UserPassword);
-            return StabilishConnection(cmd);
+            return EstabilishConnection(cmd, true);
         }
 
         public static IList<MSNMessage> GetMyMessages()
         {
             string cmd = String.Format("{0}{1}:{2}", "GET MSG ", MSNSession.User.UserID, MSNSession.User.UserPassword);
 
-            string messageString = StabilishConnection(cmd);
+            string messageString = EstabilishConnection(cmd, false);
             string value = null;
 
             IList<MSNMessage> lista = new List<MSNMessage>();
@@ -142,14 +143,14 @@ namespace WPFMessenger.Core
                 }
 
                 lista.Add(message);
-                messageString = StabilishConnection(cmd);
+                messageString = EstabilishConnection(cmd, false);
 
             }
 
             return lista;
         }
 
-        private static String StabilishConnection(String command)
+        private static String EstabilishConnection(String command, bool useCharStop)
         {
             try
             {
@@ -167,7 +168,7 @@ namespace WPFMessenger.Core
                 //Console.WriteLine("Transmitindo.....");
                 stm.Write(ba, 0, ba.Length);
 
-                string message = ConvertMessage(stm);
+                string message = ConvertMessage(stm, useCharStop);
 
                 tcpclnt.Close();
 
@@ -180,17 +181,48 @@ namespace WPFMessenger.Core
             }
         }
 
-        private static String ConvertMessage(Stream stream)
+        private static String ConvertMessage(Stream stream, bool useCharStop)
         {
             byte[] bb = new byte[1000];
-            int index = stream.Read(bb, 0, 100);
+
+            int index = stream.Read(bb, 0, 1000);
 
             StringBuilder message = new StringBuilder();
 
-            for (int i = 0; i < index; i++)
+            string parada = "0:";
+            bool continuarLendo = true;
+            string compararParada = null;
+            char? charAnterior = null;
+            char? charAtual = null;
+
+            while (continuarLendo)
             {
-                message.Append(Convert.ToChar(bb[i]).ToString());
+                if (!useCharStop)
+                    continuarLendo = false;
+
+                for (int i = 0; i < index; i++)
+                {
+                    charAtual = Convert.ToChar(bb[i]);
+                    message.Append(charAtual.ToString());
+
+                    if (useCharStop)
+                    {
+                        compararParada = String.Format("{0}{1}", charAnterior, charAtual);
+                        charAnterior = charAtual;
+
+                        if (compararParada.Equals(parada))
+                        {
+                            continuarLendo = false;
+                        }
+                    }
+                }
+
+                if (useCharStop && continuarLendo)
+                {
+                    index = stream.Read(bb, 0, 100);
+                }
             }
+
 
             return message.ToString();
         }
