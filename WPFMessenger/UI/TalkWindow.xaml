@@ -50,7 +50,7 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
-                <TextBox Name="textBoard" IsReadOnly="True" />
+                <TextBox Name="textBoard" IsReadOnly="True" VerticalScrollBarVisibility="Auto" />
             </Grid>
             
             <Grid Grid.Row="1">
