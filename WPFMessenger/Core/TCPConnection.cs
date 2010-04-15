@@ -188,25 +188,22 @@ namespace WPFMessenger.Core
             int index = stream.Read(bb, 0, 1000);
 
             StringBuilder message = new StringBuilder();
-
-            string parada = "0:";
-            bool continuarLendo = true;
-            string compararParada = null;
-            char? charAnterior = null;
             char? charAtual = null;
 
-            while (continuarLendo)
+            if (useCharStop)
             {
-                if (!useCharStop)
-                    continuarLendo = false;
+                string parada = "0:";
+                bool continuarLendo = true;
+                string compararParada = null;
+                char? charAnterior = null;
 
-                for (int i = 0; i < index; i++)
+                while (continuarLendo)
                 {
-                    charAtual = Convert.ToChar(bb[i]);
-                    message.Append(charAtual.ToString());
-
-                    if (useCharStop)
+                    for (int i = 0; i < index; i++)
                     {
+                        charAtual = Convert.ToChar(bb[i]);
+                        message.Append(charAtual.ToString());
+
                         compararParada = String.Format("{0}{1}", charAnterior, charAtual);
                         charAnterior = charAtual;
 
@@ -215,11 +212,19 @@ namespace WPFMessenger.Core
                             continuarLendo = false;
                         }
                     }
-                }
 
-                if (useCharStop && continuarLendo)
+                    if (continuarLendo)
+                    {
+                        index = stream.Read(bb, 0, 100);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < index; i++)
                 {
-                    index = stream.Read(bb, 0, 100);
+                    charAtual = Convert.ToChar(bb[i]);
+                    message.Append(charAtual.ToString());
                 }
             }
 
