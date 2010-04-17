@@ -26,6 +26,18 @@ namespace WPFMessenger
             MSNSession.CreateUser();
 
             InitializeComponent();
+
+            KeyDown += Window_KeyDown;
+        }
+
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+
+            if (e.Key.ToString().Equals("Return"))
+            {
+                btLogin.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }
+
         }
 
         private void userID_GotFocus(object sender, RoutedEventArgs e)

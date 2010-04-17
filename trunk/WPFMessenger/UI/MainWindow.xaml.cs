@@ -122,6 +122,7 @@ namespace WPFMessenger
             }
 
             treeItemRoot.Header = rootTitle.Replace("(0)", String.Format("({0})", treeItemRoot.Items.Count));
+            treeItemRoot.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Header", System.ComponentModel.ListSortDirection.Ascending));
 
             IntializerRefresher();
         }
@@ -139,9 +140,18 @@ namespace WPFMessenger
             e.Handled = true;
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
-            Application.Current.Shutdown();
+            MessageBoxResult result = MessageBox.Show("Essa ação finalizará todas as conversas e fechará o programa.\nDeseja continuar?","Finalizar WPFMessenger", MessageBoxButton.YesNo);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
+            }
+            else
+            {
+                e.Cancel = true;
+            }
         }
 
         private void LoadRSS()
