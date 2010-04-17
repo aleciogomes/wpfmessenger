@@ -46,26 +46,84 @@
         <Grid DockPanel.Dock="Bottom">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="25"/>
                 <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
                 <RichTextBox Name="textBoard" IsReadOnly="True" VerticalScrollBarVisibility="Auto" >
-                    <RichTextBox.Resources>
-                        <Style TargetType="{x:Type Paragraph}">
-                            <Setter Property="Margin" Value="0"/>
-                        </Style>
-                    </RichTextBox.Resources>
+                    <FlowDocument x:Name="textBoardContent">
+                        <FlowDocument.Resources>
+                            <Style TargetType="{x:Type Paragraph}">
+                                <Setter Property="Margin" Value="0"/>
+                            </Style>
+                        </FlowDocument.Resources>
+                    </FlowDocument>
+
                 </RichTextBox>
             </Grid>
-            
+
             <Grid Grid.Row="1">
+                <ToolBar x:Name="TBEmoticon" HorizontalContentAlignment="Right" Background="Lavender">
+                    <Button Click="Icon_Click">
+                        <Image Source="/WPFMessenger;component/resources/emoticon/nosegrin.png"  Height="14" Width="14" ToolTip=":D"/>
+                    </Button>
+                    <Button Click="Icon_Click" >
+                        <Image Source="/WPFMessenger;component/resources/emoticon/smile.png"  Height="14" Width="14" ToolTip=":)" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/wink.png"  Height="14" Width="14" ToolTip=";)" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/cool.png"  Height="14" Width="14" ToolTip="B)" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/tongue.png"  Height="14" Width="14" ToolTip=":P" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/straightface.png"  Height="14" Width="14" ToolTip=":|" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/mustache.png"  Height="14" Width="14" ToolTip=":{" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/shocked.png"  Height="14" Width="14" ToolTip=":O" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/kiss.png"  Height="14" Width="14" ToolTip=":*" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/frown.png"  Height="14" Width="14" ToolTip=":(" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/cry.png"  Height="14" Width="14" ToolTip=":'(" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/slant.png"  Height="14" Width="14" ToolTip=":/" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/angry.png"  Height="14" Width="14" ToolTip="x(" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/wince.png"  Height="14" Width="14" ToolTip="&gt;.&lt;" />
+                    </Button>
+                    <Button>
+                        <Image Source="/WPFMessenger;component/resources/emoticon/devil.png"  Height="14" Width="14" ToolTip="}:)"/>
+                    </Button>
+                    <Button >
+                        <Image Source="/WPFMessenger;component/resources/emoticon/rockout.png"  Height="14" Width="14" ToolTip="\m/"/>
+                    </Button>
+                </ToolBar>
+            </Grid>
+
+            <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="278*"/>
+                    <ColumnDefinition Width="173*" />
                     <ColumnDefinition Width="75"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Row="1" Grid.Column="0" Name="msgBox" />
-                <Button Grid.Row="1" Grid.Column="1" Name="btEnviar" Click="btEnviar_Click">Enviar</Button>
+                <RichTextBox Name="msgBox" Grid.ColumnSpan="2" />
+                <Button Grid.Column="2" Name="btEnviar" Click="btEnviar_Click">Enviar</Button>
             </Grid>
         </Grid>
     </DockPanel>

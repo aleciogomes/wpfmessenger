@@ -120,7 +120,7 @@ namespace WPFMessenger.Core
 
             while (!messageString.Equals("0:"))
             {
-                string[] returnVector = messageString.Split(new char[] { ':' });
+                string[] returnVector = messageString.Split(new char[] { ':' }, 2);
 
                 message = new MSNMessage();
 
