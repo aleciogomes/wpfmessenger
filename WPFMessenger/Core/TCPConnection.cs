@@ -161,9 +161,9 @@ namespace WPFMessenger.Core
                 //Console.WriteLine("Conectado!");
                 Stream stm = tcpclnt.GetStream();
 
-                ASCIIEncoding asen = new ASCIIEncoding();
+                UTF8Encoding enc = new UTF8Encoding();
 
-                byte[] ba = asen.GetBytes(command);
+                byte[] ba = enc.GetBytes(command);
 
                 //Console.WriteLine("Transmitindo.....");
                 stm.Write(ba, 0, ba.Length);

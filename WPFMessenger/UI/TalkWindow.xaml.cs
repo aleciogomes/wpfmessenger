@@ -2,6 +2,8 @@
 using WPFMessenger.Core;
 using System;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace WPFMessenger.UI
 {
@@ -10,6 +12,8 @@ namespace WPFMessenger.UI
     /// </summary>
     public partial class TalkWindow : Window
     {
+        private SolidColorBrush colorMsgDestiny;
+
         private UDPConnection udp;
 
         private MSNUser destinyUser;
@@ -35,6 +39,10 @@ namespace WPFMessenger.UI
             udp = new UDPConnection();
 
             this.SetLabelText(lblCurrentUser, MSNSession.User.UserName);
+
+            colorMsgDestiny = new SolidColorBrush();
+            colorMsgDestiny.Color = Color.FromArgb(255, 50, 205, 50);
+
         }
 
         private void SetLabelText(TextBlock lbl, string text)
@@ -67,7 +75,6 @@ namespace WPFMessenger.UI
 
         }
 
-
         private void btEnviar_Click(object sender, RoutedEventArgs e)
         {
             string message = msgBox.Text.ToString();
@@ -94,7 +101,17 @@ namespace WPFMessenger.UI
             message += newMessage;
             message += System.Environment.NewLine;
 
-            textBoard.Text += message;
+            TextRange range = new TextRange(textBoard.Document.ContentEnd, textBoard.Document.ContentEnd);
+            range.Text = message;
+
+            if (user.UserID == destinyUser.UserID)
+            {
+                range.ApplyPropertyValue(TextElement.ForegroundProperty, colorMsgDestiny);
+            }
+
+            //movimenta o scroll automaticamente par ao fim do texto
+            textBoard.ScrollToEnd();
+
         }
 
     }
