@@ -158,6 +158,22 @@
     <Content Include="resources\alert.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="resources\emoticon\slant.png" />
+    <Resource Include="resources\emoticon\shocked.png" />
+    <Resource Include="resources\emoticon\rockout.png" />
+    <Resource Include="resources\emoticon\wince.png" />
+    <Resource Include="resources\emoticon\straightface.png" />
+    <Resource Include="resources\emoticon\cool.png" />
+    <Resource Include="resources\emoticon\cry.png" />
+    <Resource Include="resources\emoticon\nosegrin.png" />
+    <Resource Include="resources\emoticon\angry.png" />
+    <Resource Include="resources\emoticon\devil.png" />
+    <Resource Include="resources\emoticon\frown.png" />
+    <Resource Include="resources\emoticon\kiss.png" />
+    <Resource Include="resources\emoticon\mustache.png" />
+    <Resource Include="resources\emoticon\smile.png" />
+    <Resource Include="resources\emoticon\tongue.png" />
+    <Resource Include="resources\emoticon\wink.png" />
     <Resource Include="resources\favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

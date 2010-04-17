@@ -24,47 +24,52 @@ namespace WPFMessenger.Core
 
             XmlTextReader rssReader = new XmlTextReader(rssLink);
             XmlDocument rssDoc = new XmlDocument();
-            rssDoc.Load(rssReader);
 
-            XmlNode nodeRss = null;
-
-            for (int i = 0; i < rssDoc.ChildNodes.Count && nodeRss == null; i++)
+            try
             {
-                if (rssDoc.ChildNodes[i].Name == "rss")
+                rssDoc.Load(rssReader);
+
+                XmlNode nodeRss = null;
+
+                for (int i = 0; i < rssDoc.ChildNodes.Count && nodeRss == null; i++)
                 {
-                    nodeRss = rssDoc.ChildNodes[i];
-                }
-
-            }
-
-            XmlNode nodeChannel = null;
-            for (int i = 0; i < nodeRss.ChildNodes.Count && nodeChannel == null; i++)
-            {
-                if (nodeRss.ChildNodes[i].Name == "channel")
-                {
-                    nodeChannel = nodeRss.ChildNodes[i];
-                }
-            }
-
-            XmlNode nodeItem = null;
-            RSSNews news;
-            for (int i = 0; i < nodeChannel.ChildNodes.Count; i++)
-            {
-
-                if (nodeChannel.ChildNodes[i].Name == "item")
-                {
-
-                    nodeItem = nodeChannel.ChildNodes[i];
-
-                    news = new RSSNews();
-                    news.Title = nodeItem["title"].InnerText.ToString();
-                    news.Link = nodeItem["link"].InnerText.ToString() ;
-
-                    listNews.Add(news);
+                    if (rssDoc.ChildNodes[i].Name == "rss")
+                    {
+                        nodeRss = rssDoc.ChildNodes[i];
+                    }
 
                 }
 
+                XmlNode nodeChannel = null;
+                for (int i = 0; i < nodeRss.ChildNodes.Count && nodeChannel == null; i++)
+                {
+                    if (nodeRss.ChildNodes[i].Name == "channel")
+                    {
+                        nodeChannel = nodeRss.ChildNodes[i];
+                    }
+                }
+
+                XmlNode nodeItem = null;
+                RSSNews news;
+                for (int i = 0; i < nodeChannel.ChildNodes.Count; i++)
+                {
+
+                    if (nodeChannel.ChildNodes[i].Name == "item")
+                    {
+
+                        nodeItem = nodeChannel.ChildNodes[i];
+
+                        news = new RSSNews();
+                        news.Title = nodeItem["title"].InnerText.ToString();
+                        news.Link = nodeItem["link"].InnerText.ToString();
+
+                        listNews.Add(news);
+
+                    }
+
+                }
             }
+            catch { }
         }
 
     }
