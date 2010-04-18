@@ -9,6 +9,7 @@ using WPFMessenger.UI;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows.Media;
+using System.Windows.Interop;
 
 namespace WPFMessenger
 {
@@ -190,10 +191,14 @@ namespace WPFMessenger
 
         private void ShowTalkWindow(object sender, RoutedEventArgs e)
         {
+
+            IntPtr hwnd = new WindowInteropHelper(this).Handle;
+
             TreeViewItem selectedItem = (TreeViewItem)treeUsers.SelectedItem;
 
             TalkWindow selectedWindow = talkManager.addTalk(dicTreeItems[selectedItem.Header.ToString()]);
             selectedWindow.Show();
+            selectedWindow.Focus();
         }
 
         private String FormatUserDisplay(MSNUser user)

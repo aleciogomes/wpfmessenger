@@ -6,6 +6,9 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
+using System.Runtime.InteropServices;
+using System.Timers;
+using System.Windows.Interop;
 
 namespace WPFMessenger.UI
 {
@@ -14,6 +17,7 @@ namespace WPFMessenger.UI
     /// </summary>
     public partial class TalkWindow : Window
     {
+        private IntPtr hwnd;
 
         private UDPConnection udp;
 
@@ -38,6 +42,8 @@ namespace WPFMessenger.UI
 
             DestinyUser = destiny;
 
+            Loaded += Window_Loaded;
+            KeyDown += Window_KeyDown;
             Closing += Window_Closing;
             msgBox.PreviewKeyDown += MsgBox_KeyDown;
 
@@ -50,6 +56,13 @@ namespace WPFMessenger.UI
                 InitializeEmoticonList();
             }
 
+            hwnd = IntPtr.Zero;
+
+        }
+
+        public IntPtr GetHwnd()
+        {
+            return this.hwnd;
         }
 
         private void InitializeEmoticonList()
@@ -72,12 +85,21 @@ namespace WPFMessenger.UI
             lbl.Text = nome;
         }
 
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            if (hwnd == IntPtr.Zero)
+                hwnd = new WindowInteropHelper(this).Handle;
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if(e != null)
                 e.Cancel = true;
 
             Visibility = Visibility.Collapsed;
+            msgBox.Document.Blocks.Clear();
         }
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -117,6 +139,7 @@ namespace WPFMessenger.UI
 
         public void InsertMessage(MSNUser user, string newMessage)
         {
+
             Paragraph p = new Paragraph();
 
             //nome do usuário
@@ -157,7 +180,7 @@ namespace WPFMessenger.UI
             string availableText = text;
             string flushText = String.Empty;
 
-            if (availableText.Length > 2)
+            if (availableText.Length >= 2)
             {
 
                 while (availableText.Length > 0)
@@ -165,6 +188,12 @@ namespace WPFMessenger.UI
                     if (availableText.Length > 1)
                     {
                         canditateToIcon = availableText.Substring(0, 2);
+
+                        if (availableText.Length>= 3 && !EmoticonList.ContainsKey(canditateToIcon))
+                        {
+                            canditateToIcon = availableText.Substring(0, 3);
+                        }
+
                     }
                     else
                     {
@@ -180,7 +209,7 @@ namespace WPFMessenger.UI
                             flushText = String.Empty;
                         }
 
-                        availableText = availableText.Substring(2);
+                        availableText = availableText.Substring(canditateToIcon.Length);
 
                         p.Inlines.Add(GetImageFromEmoticon(EmoticonList[canditateToIcon]));
                     }
@@ -202,95 +231,6 @@ namespace WPFMessenger.UI
 
         }
 
-        private void FormataParagraph(ref Paragraph p, MSNUser user, string text)
-        {
-
-            string modifiedText = text;
-            string flushText = null;
-            int index;
-
-            /*
-            Dictionary<string, List<int>> listIndexEmoticon = new Dictionary<string, List<int>>();
-            List<int> listIndex = null;
-            
-            bool achouIndex = false;
-            */
-
-            bool achouIcon = true;
-
-            while (!modifiedText.Equals(String.Empty) && achouIcon)
-            {
-                achouIcon = false;
-
-                //encontra os icones
-                foreach (string emoticonKey in EmoticonList.Keys)
-                {
-
-                    if (!modifiedText.Equals(String.Empty))
-                    {
-
-                        index = modifiedText.IndexOf(emoticonKey);
-
-                        //achouIndex = false;
-                        //listIndex = new List<int>();
-
-                        //pode ter informado o mesmo emoticon várias vezes
-                        if (index >= 0)
-                        {
-                            achouIcon = true;
-                            //listIndex.Add(index);
-
-                            modifiedText = modifiedText.Substring(index + 2);
-                            flushText = modifiedText.Remove(index);
-
-                            if (!flushText.Equals(String.Empty))
-                            {
-                                p.Inlines.Add(FormatRun(user, flushText));
-                            }
-
-                            modifiedText = modifiedText.Substring(index + 2);
-
-                            //adiciona a imagem no texto
-                            p.Inlines.Add(GetImageFromEmoticon(EmoticonList[emoticonKey]));
-
-                            index = modifiedText.IndexOf(emoticonKey);
-                        }
-
-                        /*
-                        if (achouIndex)
-                        {
-                            listIndexEmoticon.Add(emoticonKey, listIndex);
-                        }
-                        */
-                    }
-                }
-            }
-
-            /*
-            modifiedText = text;
-
-            //Faz os replaces
-            foreach (string emoticonKey in listIndexEmoticon.Keys)
-            {
-                foreach (int indexIco in listIndexEmoticon[emoticonKey])
-                {
-                    flushText = modifiedText.Remove(indexIco);
-
-                    if (!flushText.Equals(String.Empty))
-                    {
-                        p.Inlines.Add(FormatRun(user, flushText));
-                    }
-
-                    modifiedText = modifiedText.Substring(indexIco + 2);
-
-                    //adiciona a imagem no texto
-                    p.Inlines.Add(GetImageFromEmoticon(EmoticonList[emoticonKey]));
-                }
-
-            }*/
-
-        }
-
         private Image GetImageFromEmoticon(Uri adress)
         {
             BitmapImage bitmap = new BitmapImage(adress);
@@ -303,7 +243,14 @@ namespace WPFMessenger.UI
 
         private void Icon_Click(object sender, RoutedEventArgs e)
         {
+            Button b = (Button) sender;
+            Image i = (Image)b.Content;
+            String emoticon = i.ToolTip.ToString();
 
+            TextRange tr = new TextRange(msgBox.Selection.Start,msgBox.Selection.End);
+            tr.Text = emoticon;
+
+            msgBox.CaretPosition = tr.End;
         }
 
     }
