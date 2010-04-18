@@ -38,7 +38,7 @@ namespace WPFMessenger.Core
             {
                 IPEndPoint ip = new IPEndPoint(ipAdress, port);
 
-                byte[] data = Encoding.ASCII.GetBytes(command);
+                byte[] data = Encoding.Default.GetBytes(command);
                 udp.Send(data, data.Length, ip);
 
                 return true;
