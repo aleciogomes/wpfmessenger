@@ -90,6 +90,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Win32Utils.cs" />
     <Compile Include="Core\MSNMessage.cs" />
     <Compile Include="Core\MSNSession.cs" />
     <Compile Include="Core\PopupManager.cs" />
