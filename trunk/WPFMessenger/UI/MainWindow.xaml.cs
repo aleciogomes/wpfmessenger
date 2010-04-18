@@ -107,7 +107,7 @@ namespace WPFMessenger
             {
                 userDisplay = FormatUserDisplay(user);
 
-                if (!dicTreeItems.ContainsKey(userDisplay))
+                if (!dicTreeItems.ContainsKey(userDisplay) && user.UserID != MSNSession.User.UserID)
                 {
                     node = new TreeViewItem();
                     node.Header = userDisplay;
