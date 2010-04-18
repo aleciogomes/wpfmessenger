@@ -72,8 +72,7 @@ namespace WPFMessenger.Core
 
             foreach (MSNMessage mensagem in messageList)
             {
-
-                forwarder = UserList[mensagem.Forwarder];
+                UserList.TryGetValue(mensagem.Forwarder, out forwarder);
 
                 if (forwarder != null)
                 {
