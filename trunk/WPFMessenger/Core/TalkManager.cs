@@ -99,12 +99,14 @@ namespace WPFMessenger.Core
 
             if (!window.IsVisible)
             {
-                window.Visibility = Visibility.Visible;
                 window.WindowState = WindowState.Minimized;
+                window.Visibility = Visibility.Visible;
+                
+                Win32Utils.Flash(window);
+
             }
 
             window.InsertMessage(ownerUser, message);
-
         }
 
     }
