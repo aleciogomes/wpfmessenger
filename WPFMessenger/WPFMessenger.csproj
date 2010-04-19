@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3CA114D9-805E-4E7A-9E33-EAB4A17EACC0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -64,10 +64,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="UI\Alerta.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="UI\LoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -93,16 +89,12 @@
     <Compile Include="Core\Win32Utils.cs" />
     <Compile Include="Core\MSNMessage.cs" />
     <Compile Include="Core\MSNSession.cs" />
-    <Compile Include="Core\PopupManager.cs" />
     <Compile Include="Core\RSSNews.cs" />
     <Compile Include="Core\RSSReader.cs" />
     <Compile Include="Core\TalkManager.cs" />
     <Compile Include="Core\TCPConnection.cs" />
     <Compile Include="Core\MSNUser.cs" />
     <Compile Include="Core\UDPConnection.cs" />
-    <Compile Include="UI\Alerta.xaml.cs">
-      <DependentUpon>Alerta.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
     </Compile>

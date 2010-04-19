@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
 using System.Timers;
 using System.Windows.Interop;
+using System.Windows.Input;
 
 namespace WPFMessenger.UI
 {
@@ -113,10 +114,10 @@ namespace WPFMessenger.UI
 
         }
 
-        private void MsgBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void MsgBox_KeyDown(object sender, KeyEventArgs e)
         {
 
-            if (e.Key.ToString().Equals("Return"))
+            if (e.Key == Key.Enter && (e.KeyboardDevice.Modifiers & ModifierKeys.Shift) != ModifierKeys.Shift)
             {
                 e.Handled = true;
                 btEnviar.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -150,6 +151,7 @@ namespace WPFMessenger.UI
             p.Inlines.Add("\t");
 
             //mensagem enviada
+            newMessage = newMessage.Replace("\n", "\n\t");
             FormatParagraph(ref p, user, newMessage);
 
             p.Inlines.Add(System.Environment.NewLine);
