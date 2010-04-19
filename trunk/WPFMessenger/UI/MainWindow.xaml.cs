@@ -116,7 +116,10 @@ namespace WPFMessenger
                     treeItemRoot.Items.Add(node);
 
                     dicTreeItems.Add(node.Header.ToString(), user);
-                    talkManager.UserList.Add(user.UserID, user);
+
+                    if(!talkManager.UserList.ContainsKey(user.UserID)){
+                        talkManager.UserList.Add(user.UserID, user);
+                    }
 
                     //Console.WriteLine(String.Format("Usuário adicionado: {0}", user.UserName));
                 }
