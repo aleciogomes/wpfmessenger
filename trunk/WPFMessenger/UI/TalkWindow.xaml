@@ -124,7 +124,7 @@
                     <ColumnDefinition Width="173*" />
                     <ColumnDefinition Width="75"/>
                 </Grid.ColumnDefinitions>
-                <RichTextBox Name="msgBox" Grid.ColumnSpan="2" />
+                <RichTextBox Name="msgBox" Grid.ColumnSpan="2" AcceptsReturn="True"/>
                 <Button Grid.Column="2" Name="btEnviar" Click="btEnviar_Click">Enviar</Button>
             </Grid>
         </Grid>
