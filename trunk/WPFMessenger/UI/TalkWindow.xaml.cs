@@ -189,7 +189,7 @@ namespace WPFMessenger.UI
                     {
                         canditateToIcon = availableText.Substring(0, 2);
 
-                        if (availableText.Length>= 3 && !EmoticonList.ContainsKey(canditateToIcon))
+                        if (availableText.Length >= 3 && !EmoticonList.ContainsKey(canditateToIcon))
                         {
                             canditateToIcon = availableText.Substring(0, 3);
                         }
@@ -215,7 +215,7 @@ namespace WPFMessenger.UI
                     }
                     else
                     {
-                        flushText+= availableText[0];
+                        flushText += availableText[0];
 
                         availableText = availableText.Substring(1);
                     }
@@ -227,6 +227,10 @@ namespace WPFMessenger.UI
                     p.Inlines.Add(FormatRun(user, flushText));
                 }
 
+            }
+            else
+            {
+                p.Inlines.Add(FormatRun(user, text));
             }
 
         }
