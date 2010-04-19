@@ -136,7 +136,9 @@ namespace WPFMessenger.Core
                         }
                         else
                         {
-                            message.Forwarder = Int32.Parse(value); ;
+                            try{
+                                message.Forwarder = Int32.Parse(value); ;
+                            catch{}
                         }
                     }
 
